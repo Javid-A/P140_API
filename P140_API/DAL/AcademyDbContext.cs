@@ -9,6 +9,12 @@ namespace P140_API.DAL
         {
             
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
         public DbSet<Group> Groups { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Lesson> Lessons { get; set; }
     }
 }

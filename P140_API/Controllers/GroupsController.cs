@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using P140_API.DAL;
+using P140_API.DTOs;
 using P140_API.Entities;
 
 namespace P140_API.Controllers
@@ -16,12 +18,13 @@ namespace P140_API.Controllers
         {
             _context = context;
         }
+        [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            List<Group> groups = _context.Groups.AsNoTracking().ToList();
+            List<Group> groups = _context.Groups.Where(g=>g.IsActive).AsNoTracking().ToList();
             return  Ok(new
             {
-                StatusCode=500,
+                StatusCode=200,
                 Data = groups
             });
         }
@@ -34,10 +37,50 @@ namespace P140_API.Controllers
             return Ok(group);
         }
 
-        [HttpGet("create")]
-        public IActionResult Create()
+        [HttpPost("create")]
+        public IActionResult Create([FromBody]GroupCreateDTO group)
         {
-            Group group = _context.Groups.AsNoTracking().FirstOrDefault();
+            Group newGroup = new Group
+            {
+                Name = group.Name,
+                Profession = group.Profession,
+                IsActive = true,
+                CreatedAt = DateTime.Now,
+                ModifiedAt = DateTime.Now
+            };
+            _context.Groups.Add(newGroup);
+            _context.SaveChanges();
+
+            return Ok(newGroup);
+        }
+
+        [HttpPut("update/{id}")]
+        public IActionResult Update(int id,[FromBody]GroupUpdateDTO updatedGroup)
+        {
+            Group existed = _context.Groups.FirstOrDefault(g => g.Id == id)! ?? throw new NullReferenceException("Group is not found");
+            existed.Name = updatedGroup.Name;
+            existed.Profession = updatedGroup.Profession;
+            existed.ModifiedAt = DateTime.Now;
+            _context.SaveChanges();
+            return Ok(updatedGroup);
+        }
+
+        [HttpPatch("changestatus/{id}")]
+        public IActionResult UpdateStatus(int id)
+        {
+            Group existed = _context.Groups.FirstOrDefault(g => g.Id == id)! ?? throw new NullReferenceException("Group is not found");
+            existed.IsActive = !existed.IsActive;
+            existed.ModifiedAt = DateTime.Now;
+            _context.SaveChanges();
+            return Ok(existed);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public IActionResult Delete(int id)
+        {
+            Group group = _context.Groups.FirstOrDefault(g => g.Id == id)! ?? throw new NullReferenceException("Group is not found");
+            _context.Groups.Remove(group);
+            _context.SaveChanges();
             return Ok(group);
         }
 

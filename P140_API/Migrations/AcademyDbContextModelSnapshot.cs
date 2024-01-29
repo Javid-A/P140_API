@@ -52,7 +52,30 @@ namespace P140_API.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("P140_API.Entities.Lesson", b =>
+            modelBuilder.Entity("P140_API.Entities.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Fullname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("P140_API.Entities.StudentAttendance", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,25 +89,25 @@ namespace P140_API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TeacherId")
+                    b.Property<int>("StudentId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("TeacherId");
+                    b.HasIndex("StudentId");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("StudentAttendances");
                 });
 
             modelBuilder.Entity("P140_API.Entities.Teacher", b =>
@@ -110,16 +133,70 @@ namespace P140_API.Migrations
                     b.ToTable("Teachers");
                 });
 
-            modelBuilder.Entity("P140_API.Entities.Lesson", b =>
+            modelBuilder.Entity("P140_API.Entities.TeacherAttendance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Attendance")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("TeacherAttendances");
+                });
+
+            modelBuilder.Entity("P140_API.Entities.StudentAttendance", b =>
                 {
                     b.HasOne("P140_API.Entities.Group", "Group")
-                        .WithMany("Lessons")
+                        .WithMany("StudentAttendances")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("P140_API.Entities.Student", "Student")
+                        .WithMany("StudentAttendances")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("P140_API.Entities.TeacherAttendance", b =>
+                {
+                    b.HasOne("P140_API.Entities.Group", "Group")
+                        .WithMany("TeacherAttendances")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("P140_API.Entities.Teacher", "Teacher")
-                        .WithMany("Lessons")
+                        .WithMany("TeacherAttendances")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -131,12 +208,19 @@ namespace P140_API.Migrations
 
             modelBuilder.Entity("P140_API.Entities.Group", b =>
                 {
-                    b.Navigation("Lessons");
+                    b.Navigation("StudentAttendances");
+
+                    b.Navigation("TeacherAttendances");
+                });
+
+            modelBuilder.Entity("P140_API.Entities.Student", b =>
+                {
+                    b.Navigation("StudentAttendances");
                 });
 
             modelBuilder.Entity("P140_API.Entities.Teacher", b =>
                 {
-                    b.Navigation("Lessons");
+                    b.Navigation("TeacherAttendances");
                 });
 #pragma warning restore 612, 618
         }

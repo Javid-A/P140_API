@@ -1,9 +1,8 @@
 ﻿namespace P140_API.Entities
 {
-    public class Teacher
+    public class Teacher:BaseEntity
     {
-        public int Id { get; set; }
         public string Fullname { get; set; }
-        public List<Lesson> Lessons { get; set; }
+        public List<TeacherAttendance> TeacherAttendances { get; set; }
     }
 }

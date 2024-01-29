@@ -15,6 +15,8 @@ namespace P140_API.DAL
         }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
-        public DbSet<Lesson> Lessons { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<StudentAttendance> StudentAttendances { get; set; }
+        public DbSet<TeacherAttendance> TeacherAttendances { get; set; }
     }
 }

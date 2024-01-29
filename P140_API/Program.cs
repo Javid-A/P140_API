@@ -1,11 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using P140_API.DAL;
+using P140_API.Mapper;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(opt =>
+{
+    opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -13,6 +19,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AcademyDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+});
+
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<AutoMapperConfiguration>();
 });
 
 var app = builder.Build();

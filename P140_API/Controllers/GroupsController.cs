@@ -119,6 +119,5 @@ namespace P140_API.Controllers
             _context.SaveChanges();
             return Ok(group);
         }
-
     }
 }

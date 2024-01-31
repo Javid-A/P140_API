@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using P140_API.DAL;
@@ -22,6 +23,7 @@ namespace P140_API.Controllers
         }
 
         [HttpGet("getall")]
+        [Authorize]
         public IActionResult GetAll(int groupId)
         {
             Group group = _context.Groups.FirstOrDefault(g => g.Id == groupId)!;
@@ -31,6 +33,7 @@ namespace P140_API.Controllers
         }
 
         [HttpGet("getstudentattendances")]
+        [Authorize(Roles ="Admin")]
         public IActionResult GetStudentAttendances(int studentId)
         {
             Student student = _context.Students.Include(s=>s.StudentAttendances)

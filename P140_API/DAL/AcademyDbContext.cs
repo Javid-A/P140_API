@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using P140_API.Entities;
 
 namespace P140_API.DAL
 {
-    public class AcademyDbContext:DbContext
+    public class AcademyDbContext:IdentityDbContext
     {
         public AcademyDbContext(DbContextOptions<AcademyDbContext> options):base(options)
         {
